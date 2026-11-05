@@ -51,10 +51,9 @@ app.get('/api/health', async (req, res) => {
 // Static frontend routes
 const FRONTEND_DIR = path.resolve(__dirname, '..', 'frontend');
 app.use(express.static(FRONTEND_DIR));
-app.get('/admin',   (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'admin.html')));
-app.get('/student', (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'student.html')));
-app.get('/login',   (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'index.html')));
-app.get('/',        (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'index.html')));
+app.get(['/admin', '/admin.html'],     (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'admin.html')));
+app.get(['/student', '/student.html'], (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'student.html')));
+app.get(['/login', '/login.html', '/index.html', '/'], (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'index.html')));
 
 // 404 for unmatched API routes
 app.use((req, res, next) => {
