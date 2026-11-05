@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
@@ -48,12 +49,15 @@ app.get('/api/health', async (req, res) => {
   });
 });
 
-// Static frontend routes
-const FRONTEND_DIR = path.resolve(__dirname, '..', 'frontend');
-app.use(express.static(FRONTEND_DIR));
-app.get(['/admin', '/admin.html'],     (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'admin.html')));
-app.get(['/student', '/student.html'], (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'student.html')));
-app.get(['/login', '/login.html', '/index.html', '/'], (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'index.html')));
+// Static frontend routes (supports public/ on Vercel or frontend/ locally)
+const STATIC_DIR = fs.existsSync(path.resolve(__dirname, '..', 'public'))
+  ? path.resolve(__dirname, '..', 'public')
+  : path.resolve(__dirname, '..', 'frontend');
+
+app.use(express.static(STATIC_DIR));
+app.get(['/admin', '/admin.html'],     (req, res) => res.sendFile(path.join(STATIC_DIR, 'admin.html')));
+app.get(['/student', '/student.html'], (req, res) => res.sendFile(path.join(STATIC_DIR, 'student.html')));
+app.get(['/login', '/login.html', '/index.html', '/'], (req, res) => res.sendFile(path.join(STATIC_DIR, 'index.html')));
 
 // 404 for unmatched API routes
 app.use((req, res, next) => {

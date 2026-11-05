@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StuGer — Administrator Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Top Navigation -->
+    <header class="navbar">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <div class="brand-info">
+            <div class="brand-name-row">
+              <h1 class="brand-title">StuGer</h1>
+              <span class="version-badge">Administrator</span>
+            </div>
+            <p class="brand-subtitle" id="userDisplayName">Signed in as Administrator</p>
+          </div>
+        </div>
+
+        <div class="nav-actions">
+          <div class="system-status" id="systemStatusBadge" title="Server status">
+            <span class="status-indicator-dot"></span>
+            <span id="systemStatusText">Online</span>
+          </div>
+
+          <button id="btnOpenAddModal" class="btn btn-primary" type="button">
+            + Add Student
+          </button>
+
+          <button id="btnLogout" class="btn btn-secondary" type="button" title="Sign out">
+            Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Dashboard Statistics Section -->
+      <section class="stats-section" aria-label="Dashboard Overview">
+        <div class="stat-card">
+          <span class="stat-title">Total Enrolled</span>
+          <div class="stat-numeric-row">
+            <span class="stat-number" id="statTotalStudents">0</span>
+            <span class="stat-unit">students</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-title">Active Students</span>
+          <div class="stat-numeric-row">
+            <span class="stat-number" id="statActiveStudents">0</span>
+            <span class="stat-pill-highlight" id="activePercentPill">100% active</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-title">Departments</span>
+          <div class="stat-numeric-row">
+            <span class="stat-number" id="statTotalCourses">0</span>
+            <span class="stat-unit">majors</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-title">Average GPA</span>
+          <div class="stat-numeric-row">
+            <span class="stat-number" id="statAverageGpa">0.00</span>
+            <span class="stat-unit">/ 4.00</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Control Bar (Search, Filters, Sort) -->
+      <section class="toolbar-section">
+        <div class="search-input-wrapper">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search by ID, name, email, or course..."
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button id="btnClearSearch" class="btn-clear hidden" type="button" title="Clear search">✕</button>
+        </div>
+
+        <div class="filter-controls">
+          <div class="control-field">
+            <label for="courseFilter">Course</label>
+            <div class="select-wrapper">
+              <select id="courseFilter">
+                <option value="">All Courses</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="control-field">
+            <label for="statusFilter">Status</label>
+            <div class="select-wrapper">
+              <select id="statusFilter">
+                <option value="">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+                <option value="Graduated">Graduated</option>
+                <option value="Suspended">Suspended</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="control-field">
+            <label for="sortBy">Sort By</label>
+            <div class="select-wrapper">
+              <select id="sortBy">
+                <option value="id">Recently Added</option>
+                <option value="student_id">Student ID</option>
+                <option value="first_name">First Name</option>
+                <option value="last_name">Last Name</option>
+                <option value="gpa">GPA Score</option>
+                <option value="enrollment_date">Enrollment Date</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="toolbar-actions">
+            <button id="btnToggleSortOrder" class="btn btn-secondary icon-btn" type="button" title="Toggle Ascending / Descending">
+              <span id="sortOrderText">DESC</span>
+            </button>
+
+            <button id="btnRefresh" class="btn btn-secondary" type="button" title="Refresh Table">
+              Refresh
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Students Table Section -->
+      <section class="table-card">
+        <div class="table-card-header">
+          <div class="header-left">
+            <span class="record-counter" id="recordCountLabel">Showing 0 students</span>
+            <div id="activeFilterPills" class="active-pills"></div>
+          </div>
+          <div class="header-right">
+            <span class="table-hint">Click Student ID to copy</span>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="students-table" id="studentsTable">
+            <thead>
+              <tr>
+                <th style="width: 130px;">Student ID</th>
+                <th>Student Profile</th>
+                <th>Course / Department</th>
+                <th>Enrollment Date</th>
+                <th style="width: 100px;">GPA</th>
+                <th style="width: 120px;">Status</th>
+                <th class="th-actions" style="width: 180px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody">
+              <!-- Dynamically populated via js/admin.js -->
+            </tbody>
+          </table>
+
+          <!-- Loading State -->
+          <div id="tableLoading" class="table-state-box hidden">
+            <div class="loader-spinner"></div>
+            <span>Loading student records...</span>
+          </div>
+
+          <!-- Empty State -->
+          <div id="emptyState" class="table-state-box hidden">
+            <h3>No Students Found</h3>
+            <p>No student records matched your search or filters.</p>
+            <button id="btnResetFilters" class="btn btn-secondary" type="button">
+              Reset All Filters
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal 1: Add / Edit Student -->
+  <div id="studentModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <h2 id="modalTitle" class="modal-heading">Register New Student</h2>
+          <p id="modalSubtitle" class="modal-subheading">Fill in student academic and personal details</p>
+        </div>
+        <button class="modal-btn-close" id="btnCloseModal" type="button" title="Close (Esc)">✕</button>
+      </div>
+
+      <form id="studentForm">
+        <input type="hidden" id="studentPkId" />
+
+        <div class="modal-body-scroll">
+          <!-- Section 1: Personal Information -->
+          <div class="form-fieldset">
+            <div class="fieldset-header">
+              <span class="fieldset-num">1</span>
+              <h3>Personal Details</h3>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="firstName">First Name <span class="text-danger">*</span></label>
+                <input type="text" id="firstName" required placeholder="e.g. Alex" />
+              </div>
+
+              <div class="form-group">
+                <label for="lastName">Last Name <span class="text-danger">*</span></label>
+                <input type="text" id="lastName" required placeholder="e.g. Johnson" />
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email Address <span class="text-danger">*</span></label>
+                <input type="email" id="email" required placeholder="alex.johnson@example.com" />
+              </div>
+
+              <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" placeholder="+1-555-0100" />
+              </div>
+
+              <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <input type="date" id="dob" />
+              </div>
+
+              <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender">
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Academic Information -->
+          <div class="form-fieldset">
+            <div class="fieldset-header">
+              <span class="fieldset-num">2</span>
+              <h3>Academic Record</h3>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="studentId">Student ID <span class="label-hint">(auto-generated if empty)</span></label>
+                <input type="text" id="studentId" placeholder="e.g. STU0010" />
+              </div>
+
+              <div class="form-group">
+                <label for="studentStatus">Enrollment Status <span class="text-danger">*</span></label>
+                <select id="studentStatus" required>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                  <option value="Graduated">Graduated</option>
+                  <option value="Suspended">Suspended</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="course">Course / Department <span class="text-danger">*</span></label>
+                <input type="text" id="course" list="courseSuggestions" required placeholder="e.g. Computer Science" />
+                <datalist id="courseSuggestions">
+                  <option value="Computer Science"></option>
+                  <option value="Data Science"></option>
+                  <option value="Mechanical Engineering"></option>
+                  <option value="Electrical Engineering"></option>
+                  <option value="Business Administration"></option>
+                  <option value="Information Technology"></option>
+                  <option value="Cybersecurity"></option>
+                </datalist>
+              </div>
+
+              <div class="form-group">
+                <label for="enrollmentDate">Enrollment Date <span class="text-danger">*</span></label>
+                <input type="date" id="enrollmentDate" required />
+              </div>
+
+              <div class="form-group full-span">
+                <label for="gpa">Cumulative GPA <span class="label-hint">(0.00 – 4.00)</span></label>
+                <input type="number" id="gpa" step="0.01" min="0" max="4.0" placeholder="3.80" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Address -->
+          <div class="form-fieldset">
+            <div class="fieldset-header">
+              <span class="fieldset-num">3</span>
+              <h3>Residential Address</h3>
+            </div>
+            <div class="form-group">
+              <textarea id="address" rows="2" placeholder="Street address, city, state, postal code..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSubmitStudent">
+            <span id="btnSubmitText">Save Student</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: View Student Profile -->
+  <div id="viewModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="viewModalTitle">
+    <div class="modal-dialog modal-detail-dialog">
+      <div class="modal-header">
+        <h2 id="viewModalTitle" class="modal-heading">Student Profile</h2>
+        <button class="modal-btn-close" id="btnCloseViewModal" type="button" title="Close (Esc)">✕</button>
+      </div>
+
+      <div class="modal-body-scroll" id="viewModalBody">
+        <!-- Rendered dynamically via js/admin.js -->
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnCloseViewBtn">Close</button>
+        <button type="button" class="btn btn-primary" id="btnEditFromView">Edit Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Confirm Deletion -->
+  <div id="deleteModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-confirm-dialog">
+      <div class="modal-header">
+        <h2 class="modal-heading">Confirm Deletion</h2>
+        <button class="modal-btn-close" id="btnCloseDeleteModal" type="button" title="Close (Esc)">✕</button>
+      </div>
+
+      <div class="confirm-content">
+        <div class="confirm-text">
+          <p class="confirm-lead">Are you sure you want to permanently delete this student?</p>
+          <div class="confirm-preview-card">
+            <span class="preview-name" id="deleteStudentName">Student Name</span>
+            <div class="preview-tags">
+              <span class="id-pill" id="deleteStudentCode">STU0000</span>
+              <span class="course-pill" id="deleteStudentCourse">Course</span>
+            </div>
+          </div>
+          <p class="confirm-warning">This operation is irreversible. The student record will be removed from the database.</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnCancelDelete">Cancel</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmDelete">Delete Student</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notifications -->
+  <div id="toastContainer" class="toast-stack" aria-live="polite"></div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
+
