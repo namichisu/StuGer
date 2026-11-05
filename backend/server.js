@@ -48,6 +48,14 @@ app.get('/api/health', async (req, res) => {
   });
 });
 
+// Static frontend routes
+const FRONTEND_DIR = path.resolve(__dirname, '..', 'frontend');
+app.use(express.static(FRONTEND_DIR));
+app.get('/admin',   (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'admin.html')));
+app.get('/student', (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'student.html')));
+app.get('/login',   (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'index.html')));
+app.get('/',        (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'index.html')));
+
 // 404 for unmatched API routes
 app.use((req, res, next) => {
   if (req.path.startsWith('/api')) return notFoundHandler(req, res, next);
@@ -60,13 +68,6 @@ app.use(errorHandler);
 // ── Local development only (Vercel sets process.env.VERCEL automatically) ──
 if (!process.env.VERCEL) {
   const PORT = process.env.PORT || 3000;
-  const FRONTEND_DIR = path.resolve(__dirname, '..', 'frontend');
-
-  app.use(express.static(FRONTEND_DIR));
-  app.get('/admin',   (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'admin.html')));
-  app.get('/student', (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'student.html')));
-  app.get('/login',   (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'index.html')));
-  app.get('/',        (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'index.html')));
 
   async function startServer() {
     console.log(' Starting StuGer — Student Management System...');
