@@ -4,7 +4,6 @@
   "description": "Full-stack Student Management System with Node.js, Express, and MySQL",
   "main": "backend/server.js",
   "scripts": {
-    "build": "node -e \"const fs=require('fs'); fs.cpSync('frontend', 'public', {recursive: true});\"",
     "start": "node backend/server.js",
     "dev": "node --watch backend/server.js"
   },

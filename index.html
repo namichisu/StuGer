@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StuGer — Login</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="login-header">
+        <h1 class="login-brand">StuGer</h1>
+        <p class="login-tag">Student Management System</p>
+        <p class="login-instruction">Sign in to your account</p>
+      </div>
+
+      <div id="loginError" class="login-error hidden"></div>
+
+      <form id="loginForm" class="login-form">
+        <div class="form-group">
+          <label for="loginIdentifier">Username, Student ID, or Email</label>
+          <input
+            type="text"
+            id="loginIdentifier"
+            required
+            placeholder="e.g. terobau or STU001"
+            autocomplete="username"
+            autofocus
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input
+            type="password"
+            id="loginPassword"
+            required
+            placeholder="Enter password"
+            autocomplete="current-password"
+          />
+        </div>
+
+        <button type="submit" id="btnSubmitLogin" class="btn btn-primary btn-block">
+          Sign In
+        </button>
+      </form>
+
+      <!-- Quick Demo Credentials -->
+      <div class="demo-helpers">
+        <span class="demo-label">Quick Demo Logins:</span>
+        <div class="demo-buttons">
+          <button type="button" class="btn-demo" id="btnDemoAdmin" title="Fill Admin credentials">
+            Admin (terobau / teriama@123)
+          </button>
+          <button type="button" class="btn-demo" id="btnDemoStudent" title="Fill Student credentials">
+            Student (STU001 / student123)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-stack" aria-live="polite"></div>
+
+  <script src="js/login.js"></script>
+</body>
+</html>
